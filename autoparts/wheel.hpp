@@ -9,8 +9,8 @@ private:
     string boltPattern;
     
 public:
-    Wheel(string id, string name, double price, double diameter, string boltPattern);
+    Wheel(int id, string name, double price, double diameter, string boltPattern);
     bool isCompatibleWith(const string& vehicle) const override;
-    string getType() const override;
+    PartType getType() const override;
     string getSpecs() const;
 };

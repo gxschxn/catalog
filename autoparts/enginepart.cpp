@@ -1,6 +1,6 @@
 #include "enginepart.hpp"
 
-EnginePart::EnginePart(string id, string name, double price, string engineType)
+EnginePart::EnginePart(int id, string name, double price, string engineType)
     : AutoPart(id, name, price), engineType(engineType) {
     // автоматическое добавление совместимых авто в зависимости от типа двигателя
     if (engineType == "V6") {
@@ -37,7 +37,7 @@ bool EnginePart::isCompatibleWith(const string& vehicle) const {
     return false;
 }
 
-string EnginePart::getType() const { return "Engine"; }
+PartType EnginePart::getType() const { return PartType::ENGINE; }
 
 void EnginePart::addVehicle(const string& vehicle) { 
     compatibleVehicles.push_back(vehicle); 

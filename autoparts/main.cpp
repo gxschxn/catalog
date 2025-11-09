@@ -10,11 +10,11 @@ int main() {
     
     // добавление запчасти в каталог
     cout << "\n1. Добавляем запчасти в каталог:" << endl;
-    app.addEnginePart("ENG001", "Двигатель V6", 350000, "V6");
-    app.addEnginePart("ENG002", "Двигатель EJ204", 150000, "EJ204");
-    app.addEnginePart("ENG003", "Двигатель V12", 2500000, "V12");
-    app.addWheelPart("WHE001", "Литые диски", 80000, 17.0, "5x114.3");
-    app.addWheelPart("WHE002", "Кованые диски", 120000, 18.0, "5x100");
+    app.addEnginePart(1, "Двигатель V6", 350000, "V6");
+    app.addEnginePart(2, "Двигатель EJ204", 150000, "EJ204");
+    app.addEnginePart(3, "Двигатель V12", 2500000, "V12");
+    app.addWheelPart(4, "Литые диски", 80000, 17.0, "5x114.3");
+    app.addWheelPart(5, "Кованые диски", 120000, 18.0, "5x100");
     
     app.showStats();
     
@@ -34,8 +34,8 @@ int main() {
     // добавление в корзину
     cout << "\n5. Добавляем товары в корзину:" << endl;
     
-    app.addToCart("Двигатель V6 - 350000 руб. (ENG001)");
-    app.addToCart("Литые диски - 80000 руб. (WHE001)", 4);
+    app.addToCart("Двигатель V6 - 350000 руб. (1)");
+    app.addToCart("Литые диски - 80000 руб. (4)", 4);
     
     app.showStats();
     

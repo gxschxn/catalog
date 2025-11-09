@@ -10,8 +10,8 @@ private:
     vector<string> compatibleVehicles;
     
 public:
-    EnginePart(string id, string name, double price, string engineType);
+    EnginePart(int id, string name, double price, string engineType);
     bool isCompatibleWith(const string& vehicle) const override;
-    string getType() const override;
+    PartType getType() const override;
     void addVehicle(const string& vehicle);
 };

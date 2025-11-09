@@ -4,11 +4,11 @@
 #include <iostream>
 #include <memory>
 
-void AutoPartsApp::addEnginePart(std::string id, std::string name, double price, std::string type) {
+void AutoPartsApp::addEnginePart(int id, std::string name, double price, std::string type) {
     catalog.addPart(std::unique_ptr<EnginePart>(new EnginePart (id, name, price, type)));
 }
 
-void AutoPartsApp::addWheelPart(std::string id, std::string name, double price, double diameter, std::string bolts) {
+void AutoPartsApp::addWheelPart(int id, std::string name, double price, double diameter, std::string bolts) {
     catalog.addPart(std::unique_ptr<Wheel>(new Wheel (id, name, price, diameter, bolts)));
 }
 

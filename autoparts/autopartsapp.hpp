@@ -11,8 +11,8 @@ private:
     Cart cart;
     
 public:
-    void addEnginePart(std::string id, std::string name, double price, std::string type);
-    void addWheelPart(std::string id, std::string name, double price, double diameter, std::string bolts);
+    void addEnginePart(int id, std::string name, double price, std::string type);
+    void addWheelPart(int id, std::string name, double price, double diameter, std::string bolts);
     std::vector<AutoPart*> findForVehicle(const std::string& vehicle);
     void addToCart(const std::string& partName, int qty = 1);
     void checkout();

@@ -3,15 +3,22 @@
 #include <string>
 using namespace std;
 
+enum class PartType {
+    ENGINE = 1,     
+    WHEEL = 2,
+    SUSPENSION = 3,
+    BODY = 4
+};
+
 class AutoPart {
 protected:
-    string id;
+    int id;
     string name;
     double price;
     int quantity;
     
 public:
-    AutoPart(string id, string name, double price);
+    AutoPart(int id, string name, double price);
     virtual ~AutoPart() = default;
     
     double getPrice() const;
@@ -20,5 +27,7 @@ public:
     bool isValid() const;
     
     virtual bool isCompatibleWith(const string& vehicle) const = 0;
-    virtual string getType() const = 0;
+    virtual PartType getType() const = 0;
 };
+
+string partTypeToString(PartType type);
