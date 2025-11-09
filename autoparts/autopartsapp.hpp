@@ -1,5 +1,4 @@
-#ifndef AUTOPARTSAPP_HPP
-#define AUTOPARTSAPP_HPP
+#pragma once
 
 #include "catalog.hpp"
 #include "cart.hpp"
@@ -19,5 +18,3 @@ public:
     void checkout();
     void showStats();
 };
-
-#endif

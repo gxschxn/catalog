@@ -1,5 +1,4 @@
-#ifndef CATALOG_HPP
-#define CATALOG_HPP
+#pragma once
 
 #include "autopart.hpp"
 #include <unordered_map>
@@ -16,5 +15,3 @@ public:
     vector<AutoPart*> findCompatible(const string& vehicle);
     size_t getSize() const;
 };
-
-#endif

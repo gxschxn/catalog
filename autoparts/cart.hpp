@@ -1,5 +1,4 @@
-#ifndef CART_HPP
-#define CART_HPP
+#pragma once
 
 #include "autopart.hpp"
 #include <unordered_map>
@@ -15,5 +14,3 @@ public:
     void clear();
     size_t getItemCount() const;
 };
-
-#endif

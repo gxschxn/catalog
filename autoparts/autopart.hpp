@@ -1,5 +1,4 @@
-#ifndef AUTOPART_HPP
-#define AUTOPART_HPP
+#pragma once
 
 #include <string>
 using namespace std;
@@ -23,5 +22,3 @@ public:
     virtual bool isCompatibleWith(const string& vehicle) const = 0;
     virtual string getType() const = 0;
 };
-
-#endif

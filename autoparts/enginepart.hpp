@@ -1,5 +1,4 @@
-#ifndef ENGINEPART_HPP
-#define ENGINEPART_HPP
+#pragma once
 
 #include "autopart.hpp"
 #include <vector>
@@ -16,5 +15,3 @@ public:
     string getType() const override;
     void addVehicle(const string& vehicle);
 };
-
-#endif

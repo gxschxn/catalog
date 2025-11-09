@@ -1,5 +1,4 @@
-#ifndef WHEEL_HPP
-#define WHEEL_HPP
+#pragma once
 
 #include "autopart.hpp"
 #include <string>
@@ -15,5 +14,3 @@ public:
     string getType() const override;
     string getSpecs() const;
 };
-
-#endif
