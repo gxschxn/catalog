@@ -1,13 +1,15 @@
 #include "autopart.hpp"
 #include <string>
 #include <algorithm>
+#include <sstream>
+#include <iomanip>
 
 AutoPart::AutoPart(std::string id, std::string name, double price) 
     : id(id), name(name), price(price), quantity(0) {
 }
 
 AutoPart::~AutoPart() {
-    // Убираем вывод для чистоты
+    // Деструктор
 }
 
 double AutoPart::getPrice() const { 
@@ -19,20 +21,46 @@ bool AutoPart::isAvailable() const {
 }
 
 std::string AutoPart::getFullInfo() const { 
-    return name + " - " + std::to_string(static_cast<int>(price)) + " RUB (" + id + ")";
+    std::ostringstream oss;
+    oss << name << " - " << std::fixed << std::setprecision(0) 
+        << price << " RUB (" << id << ")";
+    return oss.str();
 }
 
 bool AutoPart::isValid() const { 
     return !id.empty() && price > 0 && !name.empty();
 }
 
+bool AutoPart::checkCompatibility(const std::string& vehicle) const {
+    std::string vehicleLower = vehicle;
+    std::transform(vehicleLower.begin(), vehicleLower.end(), 
+                   vehicleLower.begin(), ::tolower);
+    
+    for (const auto& compatibleVehicle : compatibilityList) {
+        std::string compatibleLower = compatibleVehicle;
+        std::transform(compatibleLower.begin(), compatibleLower.end(), 
+                       compatibleLower.begin(), ::tolower);
+        
+        if (vehicleLower.find(compatibleLower) != std::string::npos ||
+            compatibleLower.find(vehicleLower) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string AutoPart::getCompatibilityInfo() const {
+    return "Compatible with " + std::to_string(compatibilityList.size()) + " vehicle types";
+}
+
 void AutoPart::displayInfo() const {
     std::cout << "Type: " << getType() << std::endl;
     std::cout << "Info: " << getFullInfo() << std::endl;
+    std::cout << "Specs: " << getSpecifications() << std::endl;
 }
 
 std::string AutoPart::getDetailedInfo() const {
-    return getFullInfo() + " | Compatible with " + std::to_string(compatibilityList.size()) + " vehicles";
+    return getFullInfo() + " | " + getCompatibilityInfo();
 }
 
 bool AutoPart::operator==(const AutoPart& other) const {
@@ -48,6 +76,13 @@ bool AutoPart::operator<(const AutoPart& other) const {
         return price < other.price;
     }
     return name < other.name;
+}
+
+bool AutoPart::operator>(const AutoPart& other) const {
+    if (price != other.price) {
+        return price > other.price;
+    }
+    return name > other.name;
 }
 
 AutoPart& AutoPart::operator=(const AutoPart& other) {

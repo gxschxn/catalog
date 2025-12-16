@@ -5,42 +5,37 @@
 void Cart::addItem(std::shared_ptr<AutoPart> part, int qty) {
     if (part && part->isValid()) {
         items[part] += qty;
+        operationHistory.push_back("Added: " + part->getName() + " x" + std::to_string(qty));
     }
 }
 
 void Cart::removeItem(std::shared_ptr<AutoPart> part) {
     if (part) {
         items.erase(part);
+        operationHistory.push_back("Removed: " + part->getName());
     }
 }
 
 void Cart::clear() {
-    items.clear();
-}
-
-size_t Cart::getItemCount() const {
-    return items.size();
-}
-
-double Cart::getTotal() const {
-    double total = 0;
-    for (auto it = items.begin(); it != items.end(); ++it) {
-        if (it->first) {
-            total += it->first->getPrice() * it->second;
-        }
+    if (!items.empty()) {
+        operationHistory.push_back("Cart cleared");
+        items.clear();
     }
-    return total;
 }
 
 std::ostream& operator<<(std::ostream& os, const Cart& cart) {
-    os << "Содержимое корзины (" << cart.items.size() << " позиций):\n";
-    for (auto it = cart.items.begin(); it != cart.items.end(); ++it) {
-        if (it->first) {
-            os << "  " << it->first->getName() << " x " << it->second 
-               << " = " << std::fixed << std::setprecision(0) 
-               << it->first->getPrice() * it->second << " руб.\n";
-        }
-    }
+    os << "Корзина (" << cart.items.size() << " позиций):\n";
+    
+    // Используем for_each для вывода
+    std::for_each(cart.items.begin(), cart.items.end(),
+        [&os](const auto& item) {
+            if (item.first) {
+                os << "  " << item.first->getName() << " x " << item.second 
+                   << " = " << std::fixed << std::setprecision(0) 
+                   << item.first->getPrice() * item.second << " руб.\n";
+            }
+        });
+    
     os << "Итого: " << std::fixed << std::setprecision(0) << cart.getTotal() << " руб.";
     return os;
 }

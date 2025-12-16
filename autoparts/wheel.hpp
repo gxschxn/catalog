@@ -11,23 +11,22 @@ private:
 public:
     Wheel(std::string id, std::string name, double price, double diameter, std::string boltPattern);
     
-    Wheel(const Wheel& other) = delete;
+    Wheel(const Wheel& other) = delete;  // Оставляем удаленным
     
-    bool isCompatibleWith(const std::string& vehicle) const override;
+    // Реализация чисто виртуальных методов
     std::string getType() const override;
+    std::string getSpecifications() const override;
     
-    // реализуем интерфейс CloneablePart
-    CloneablePart* deepClone() const override;
-    CloneablePart* shallowClone() const override;
+    // Переопределение метода интерфейса
+    bool checkCompatibility(const std::string& vehicle) const override;
     
-    // и наш метод
-    AutoPart* clone() const override;
-    
+    // Специфичные методы
     std::string getSpecs() const;
+    double getDiameter() const { return diameter; }
+    std::string getBoltPattern() const { return boltPattern; }
     
-    Wheel* operator+(const Wheel& other) const;
+    Wheel& operator=(const Wheel& other);
+    
+    // Убираем оператор +, оставляем только >
     bool operator>(const Wheel& other) const;
-    
-    std::string getSpecialInfo() const;
-    virtual std::string getSpecialInfoVirtual() const;
 };
