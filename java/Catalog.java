@@ -58,7 +58,6 @@ public class Catalog {
         return this.parts.size();
     }
     
-    // Дополнительный метод для получения всех запчастей
     public List<AutoPart> getAllParts() {
         return new ArrayList<>(this.parts.values());
     }

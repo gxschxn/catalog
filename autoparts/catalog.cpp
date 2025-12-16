@@ -11,8 +11,6 @@ void Catalog::addPart(std::unique_ptr<AutoPart> part) {
 std::shared_ptr<AutoPart> Catalog::findPart(const std::string& name) {
     auto it = parts.find(name);
     if (it != parts.end()) {
-        // Возвращаем shared_ptr, который не владеет объектом
-        // Это безопасно, так как unique_ptr в parts гарантирует время жизни
         return std::shared_ptr<AutoPart>(it->second.get(), [](AutoPart*){});
     }
     return nullptr;
@@ -33,7 +31,6 @@ size_t Catalog::getSize() const {
     return parts.size(); 
 }
 
-// Перегрузка оператора []
 std::shared_ptr<AutoPart> Catalog::operator[](const std::string& partName) {
     return findPart(partName);
 }

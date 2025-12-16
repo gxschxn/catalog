@@ -28,7 +28,6 @@ public enum PartType {
         }
     }
     
-    // Статический метод для получения типа по значению
     public static PartType fromValue(int value) {
         for (PartType type : PartType.values()) {
             if (type.getValue() == value) {

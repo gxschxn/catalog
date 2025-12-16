@@ -1,16 +1,30 @@
-public abstract class AutoPart {
-    protected int id;
+interface Installable {
+    String getInstallationInstructions();
+    int getInstallationTime();
+    
+    default String getInstallationInfo() {
+        return "Установка: " + getInstallationTime() + " мин";
+    }
+}
+
+interface Warrantable {
+    int getWarrantyMonths();
+    void setWarrantyMonths(int months);
+    
+    default boolean isWarrantyValid() {
+        return getWarrantyMonths() > 0;
+    }
+}
+
+public abstract class AutoPart implements Cloneable {
+    protected int id; // protected для демонстрации
     protected String name;
     protected double price;
     protected int quantity;
     
-    // Статическое поле для подсчета всех созданных автозапчастей
     private static int totalPartsCreated = 0;
-    
-    // Статическое поле для минимальной допустимой цены
     private static final double MIN_PRICE = 0.0;
     
-    // Статическое исключение для некорректных данных
     public static class InvalidPartException extends RuntimeException {
         public InvalidPartException(String message) {
             super(message);
@@ -18,27 +32,41 @@ public abstract class AutoPart {
     }
 
     public AutoPart(int id, String name, double price) {
-        // Использование this для устранения неоднозначности
         this.id = id;
         this.name = name;
-        this.setPrice(price); // Используем setter для проверки
+        this.setPrice(price);
         this.quantity = 0;
-        
-        // Увеличиваем счетчик созданных запчастей
         totalPartsCreated++;
     }
 
-    // Статический метод для получения общего количества созданных запчастей
     public static int getTotalPartsCreated() {
         return totalPartsCreated;
     }
     
-    // Статический метод для проверки корректности цены
     public static boolean isValidPrice(double price) {
         return price > MIN_PRICE;
     }
     
-    // Геттеры и сеттеры с проверкой и разумным использованием this
+    // Виртуальный метод
+    public String getFullInfo() {
+        return this.name + " - " + (int)this.price + " руб. (" + this.id + ")";
+    }
+    
+    // Не виртуальный метод (final)
+    public final String getPartCode() {
+        return "PART-" + this.id;
+    }
+    
+    // Метод с вызовом виртуальной функции
+    public void displayPartInfo() {
+        System.out.println("Инфо: " + getFullInfo());
+    }
+    
+    // Метод для доступа к protected полю из производных классов
+    protected void updateIdWithPrefix(String prefix) {
+        this.name = prefix + this.name;
+    }
+    
     public double getPrice() { 
         return this.price; 
     }
@@ -87,14 +115,22 @@ public abstract class AutoPart {
         return this.quantity > 0; 
     }
     
-    public String getFullInfo() {
-        return this.name + " - " + (int)this.price + " руб. (" + this.id + ")";
-    }
-    
     public boolean isValid() { 
         return this.id > 0 && this.price > 0; 
     }
     
     public abstract boolean isCompatibleWith(String vehicle);
     public abstract PartType getType();
+    
+    // Методы для клонирования
+    @Override
+    public AutoPart clone() {
+        try {
+            return (AutoPart) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+    
+    public abstract AutoPart deepClone();
 }

@@ -1,29 +1,40 @@
 #include "autopart.hpp"
 #include <string>
+#include <algorithm>
 
 AutoPart::AutoPart(std::string id, std::string name, double price) 
-    : id(id), name(name), price(price), quantity(0) {}
+    : id(id), name(name), price(price), quantity(0) {
+}
 
-// Конструктор копирования
-AutoPart::AutoPart(const AutoPart& other)
-    : id(other.id), name(other.name), price(other.price), quantity(other.quantity) {}
+AutoPart::~AutoPart() {
+    // Убираем вывод для чистоты
+}
 
-double AutoPart::getPrice() const { return price; }
+double AutoPart::getPrice() const { 
+    return price; 
+}
 
-bool AutoPart::isAvailable() const { return quantity > 0; }
+bool AutoPart::isAvailable() const { 
+    return quantity > 0; 
+}
 
 std::string AutoPart::getFullInfo() const { 
-    // Использование методов std::string для конкатенации
-    std::string info = name + " - " + std::to_string(static_cast<int>(price)) + " руб. (" + id + ")";
-    return info;
+    return name + " - " + std::to_string(static_cast<int>(price)) + " RUB (" + id + ")";
 }
 
 bool AutoPart::isValid() const { 
-    // Использование методов std::string для проверки
     return !id.empty() && price > 0 && !name.empty();
 }
 
-// Перегрузка операторов
+void AutoPart::displayInfo() const {
+    std::cout << "Type: " << getType() << std::endl;
+    std::cout << "Info: " << getFullInfo() << std::endl;
+}
+
+std::string AutoPart::getDetailedInfo() const {
+    return getFullInfo() + " | Compatible with " + std::to_string(compatibilityList.size()) + " vehicles";
+}
+
 bool AutoPart::operator==(const AutoPart& other) const {
     return id == other.id && name == other.name && price == other.price;
 }
@@ -33,15 +44,32 @@ bool AutoPart::operator!=(const AutoPart& other) const {
 }
 
 bool AutoPart::operator<(const AutoPart& other) const {
-    // Сравнение по цене, затем по имени
     if (price != other.price) {
         return price < other.price;
     }
     return name < other.name;
 }
 
-// Дружественная функция для вывода
+AutoPart& AutoPart::operator=(const AutoPart& other) {
+    if (this != &other) {
+        id = other.id;
+        name = other.name;
+        price = other.price;
+        quantity = other.quantity;
+        compatibilityList = other.compatibilityList;
+    }
+    return *this;
+}
+
 std::ostream& operator<<(std::ostream& os, const AutoPart& part) {
     os << part.getFullInfo();
     return os;
+}
+
+void AutoPart::addCompatibility(const std::string& vehicle) {
+    compatibilityList.push_back(vehicle);
+}
+
+void AutoPart::setCompatibilityList(const std::vector<std::string>& list) {
+    compatibilityList = list;
 }

@@ -3,7 +3,6 @@ import java.util.*;
 public class Cart {
     private Map<AutoPart, Integer> items;
     
-    // Статическое поле для максимального количества одного товара
     private static final int MAX_QUANTITY_PER_ITEM = 10;
 
     public Cart() {
@@ -76,7 +75,6 @@ public class Cart {
         return this.items.size();
     }
     
-    // Статический метод для проверки допустимого количества
     public static boolean isValidQuantity(int quantity) {
         return quantity > 0 && quantity <= MAX_QUANTITY_PER_ITEM;
     }
