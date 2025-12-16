@@ -7,39 +7,64 @@ public class EnginePart extends AutoPart {
 
     public EnginePart(int id, String name, double price, String engineType) {
         super(id, name, price);
+        
+        // Использование this для устранения неоднозначности
         this.engineType = engineType;
         this.compatibleVehicles = new ArrayList<>();
         
-        if (engineType.equals("V6")) {
-            compatibleVehicles.add("toyota camry sedan");
-            compatibleVehicles.add("toyota rav4");
-            compatibleVehicles.add("honda accord sedan");
-        } else if (engineType.contains("EJ")) {
-            compatibleVehicles.add("subaru impreza");
-            compatibleVehicles.add("subaru forester");
-            compatibleVehicles.add("subaru wrx");
-        } else if (engineType.equals("V12")) {
-            compatibleVehicles.add("ferrari 488");
-            compatibleVehicles.add("lamborghini aventador");
+        try {
+            this.initializeCompatibleVehicles();
+        } catch (Exception e) {
+            System.err.println("Ошибка инициализации совместимых автомобилей: " + e.getMessage());
+            this.compatibleVehicles = new ArrayList<>(); // Гарантируем, что список не null
+        }
+    }
+    
+    private void initializeCompatibleVehicles() {
+        if (this.engineType.equals("V6")) {
+            this.compatibleVehicles.add("toyota camry sedan");
+            this.compatibleVehicles.add("toyota rav4");
+            this.compatibleVehicles.add("honda accord sedan");
+        } else if (this.engineType.contains("EJ")) {
+            this.compatibleVehicles.add("subaru impreza");
+            this.compatibleVehicles.add("subaru forester");
+            this.compatibleVehicles.add("subaru wrx");
+        } else if (this.engineType.equals("V12")) {
+            this.compatibleVehicles.add("ferrari 488");
+            this.compatibleVehicles.add("lamborghini aventador");
+        } else {
+            throw new IllegalArgumentException("Неизвестный тип двигателя: " + this.engineType);
         }
     }
 
     public boolean isCompatibleWith(String vehicle) {
-        if (engineType.equals("V6")) {
-            if (vehicle.contains("toyota") || 
-                vehicle.contains("honda") ||
-                vehicle.contains("nissan")) return true;
-        } else if (engineType.contains("EJ")) {
-            if (vehicle.contains("subaru")) return true;
-        } else if (engineType.equals("V12")) {
-            if (vehicle.contains("ferrari") || 
-                vehicle.contains("lamborghini")) return true;
+        try {
+            if (vehicle == null || vehicle.trim().isEmpty()) {
+                return false;
+            }
+            
+            String lowerVehicle = vehicle.toLowerCase();
+            
+            if (this.engineType.equals("V6")) {
+                if (lowerVehicle.contains("toyota") || 
+                    lowerVehicle.contains("honda") ||
+                    lowerVehicle.contains("nissan")) return true;
+            } else if (this.engineType.contains("EJ")) {
+                if (lowerVehicle.contains("subaru")) return true;
+            } else if (this.engineType.equals("V12")) {
+                if (lowerVehicle.contains("ferrari") || 
+                    lowerVehicle.contains("lamborghini")) return true;
+            }
+            
+            for (String v : this.compatibleVehicles) {
+                if (v.equals(lowerVehicle)) return true;
+            }
+            return false;
+            
+        } catch (Exception e) {
+            System.err.println("Ошибка проверки совместимости: " + e.getMessage());
+            return false;
         }
-        
-        for (String v : compatibleVehicles) {
-            if (v.equals(vehicle)) return true;
-        }
-        return false;
     }
 
     public PartType getType() {
@@ -47,6 +72,17 @@ public class EnginePart extends AutoPart {
     }
 
     public void addVehicle(String vehicle) {
-        compatibleVehicles.add(vehicle);
+        try {
+            if (vehicle != null && !vehicle.trim().isEmpty()) {
+                this.compatibleVehicles.add(vehicle.toLowerCase());
+            }
+        } catch (Exception e) {
+            System.err.println("Ошибка добавления автомобиля: " + e.getMessage());
+        }
+    }
+    
+    // Геттер для engineType с использованием this
+    public String getEngineType() {
+        return this.engineType;
     }
 }

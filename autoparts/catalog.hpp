@@ -7,11 +7,15 @@
 
 class Catalog {
 private:
-    unordered_map<string, unique_ptr<AutoPart>> parts;
+    // Использование unique_ptr для исключительного владения
+    std::unordered_map<std::string, std::unique_ptr<AutoPart>> parts;
     
 public:
-    void addPart(unique_ptr<AutoPart> part);
-    AutoPart* findPart(const string& name);
-    vector<AutoPart*> findCompatible(const string& vehicle);
+    void addPart(std::unique_ptr<AutoPart> part);
+    std::shared_ptr<AutoPart> findPart(const std::string& name);
+    std::vector<std::shared_ptr<AutoPart>> findCompatible(const std::string& vehicle);
     size_t getSize() const;
+    
+    // Перегрузка оператора []
+    std::shared_ptr<AutoPart> operator[](const std::string& partName);
 };

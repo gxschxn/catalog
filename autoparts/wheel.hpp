@@ -6,11 +6,19 @@
 class Wheel : public AutoPart {
 private:
     double diameter;
-    string boltPattern;
+    std::string boltPattern;
     
 public:
-    Wheel(int id, string name, double price, double diameter, string boltPattern);
-    bool isCompatibleWith(const string& vehicle) const override;
-    PartType getType() const override;
-    string getSpecs() const;
+    Wheel(std::string id, std::string name, double price, double diameter, std::string boltPattern);
+    
+    // Конструктор копирования
+    Wheel(const Wheel& other);
+    
+    bool isCompatibleWith(const std::string& vehicle) const override;
+    std::string getType() const override;
+    std::string getSpecs() const;
+    
+    // Перегрузка операторов
+    Wheel operator+(const Wheel& other) const; // для создания комплекта
+    bool operator>(const Wheel& other) const;
 };

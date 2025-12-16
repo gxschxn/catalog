@@ -11,10 +11,14 @@ public enum PartType {
     }
 
     public int getValue() {
-        return value;
+        return this.value;
     }
 
     public static String partTypeToString(PartType type) {
+        if (type == null) {
+            return "Unknown";
+        }
+        
         switch(type) {
             case ENGINE: return "Engine";
             case WHEEL: return "Wheel";
@@ -22,5 +26,15 @@ public enum PartType {
             case BODY: return "Body";
             default: return "Unknown";
         }
+    }
+    
+    // Статический метод для получения типа по значению
+    public static PartType fromValue(int value) {
+        for (PartType type : PartType.values()) {
+            if (type.getValue() == value) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Неизвестное значение типа запчасти: " + value);
     }
 }
