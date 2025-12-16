@@ -11,14 +11,23 @@ private:
 public:
     Wheel(std::string id, std::string name, double price, double diameter, std::string boltPattern);
     
-    // Конструктор копирования
-    Wheel(const Wheel& other);
+    Wheel(const Wheel& other) = delete;
     
     bool isCompatibleWith(const std::string& vehicle) const override;
     std::string getType() const override;
+    
+    // реализуем интерфейс CloneablePart
+    CloneablePart* deepClone() const override;
+    CloneablePart* shallowClone() const override;
+    
+    // и наш метод
+    AutoPart* clone() const override;
+    
     std::string getSpecs() const;
     
-    // Перегрузка операторов
-    Wheel operator+(const Wheel& other) const; // для создания комплекта
+    Wheel* operator+(const Wheel& other) const;
     bool operator>(const Wheel& other) const;
+    
+    std::string getSpecialInfo() const;
+    virtual std::string getSpecialInfoVirtual() const;
 };

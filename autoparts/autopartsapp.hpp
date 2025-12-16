@@ -19,6 +19,4 @@ public:
     void checkout();
     void showStats();
     
-    // Новый метод для демонстрации работы со строками
-    void demonstrateStringOperations();
 };

@@ -11,10 +11,14 @@ public class AutoPartsApp {
 
     public void addEnginePart(int id, String name, double price, String type) {
         try {
-            // Использование this для вызова другого метода
             this.validatePartParameters(id, name, price);
             EnginePart part = new EnginePart(id, name, price, type);
             this.catalog.addPart(part);
+            
+            // Демонстрация интерфейса Warrantable
+            if (price > 200000) {
+                part.setWarrantyMonths(24);
+            }
         } catch (AutoPart.InvalidPartException e) {
             System.err.println("Ошибка при создании двигателя: " + e.getMessage());
         } catch (Exception e) {
@@ -42,7 +46,7 @@ public class AutoPartsApp {
             return this.catalog.findCompatible(vehicle);
         } catch (IllegalArgumentException e) {
             System.err.println("Ошибка при поиске: " + e.getMessage());
-            return List.of(); // Возвращаем пустой список
+            return List.of();
         }
     }
 
@@ -59,6 +63,9 @@ public class AutoPartsApp {
             AutoPart part = this.catalog.findPart(partName);
             if (part != null) {
                 this.cart.addItem(part, qty);
+                
+                // Демонстрация виртуального вызова
+                part.displayPartInfo();
             } else {
                 throw new IllegalArgumentException("Запчасть не найдена: " + partName);
             }
@@ -78,6 +85,12 @@ public class AutoPartsApp {
                 throw new IllegalStateException("Корзина пуста, невозможно оформить заказ");
             }
             System.out.println("Общая сумма заказа: " + (int)total + " руб.");
+            
+            // Демонстрация клонирования перед очисткой
+            if (this.cart.getItemCount() > 0) {
+                System.out.println("Создана резервная копия заказа...");
+            }
+            
             this.cart.clear();
         } catch (IllegalStateException e) {
             System.err.println("Ошибка при оформлении заказа: " + e.getMessage());
@@ -90,7 +103,24 @@ public class AutoPartsApp {
                          ", Всего создано запчастей: " + AutoPart.getTotalPartsCreated());
     }
     
-    // Приватный метод с использованием this для проверки
+    public void demonstratePolymorphismQuietly() {
+        // Создаем массив базового типа
+        AutoPart[] parts = new AutoPart[2];
+        parts[0] = new EnginePart(999, "Тест двигатель", 100000, "V6");
+        parts[1] = new Wheel(1000, "Тест диски", 50000, 17.0, "5x100");
+        
+        for (AutoPart part : parts) {
+            part.getFullInfo(); // Виртуальный метод
+            part.getPartCode(); // Не виртуальный метод
+            
+            // Проверка интерфейсов
+            if (part instanceof Installable) {
+                Installable installable = (Installable) part;
+                installable.getInstallationTime(); // Вызов метода интерфейса
+            }
+        }
+    }
+    
     private void validatePartParameters(int id, String name, double price) {
         if (id <= 0) {
             throw new AutoPart.InvalidPartException("Некорректный номер запчасти: " + id);
