@@ -1,22 +1,39 @@
 #include "catalog.hpp"
+#include <algorithm>
 
 void Catalog::addPart(std::unique_ptr<AutoPart> part) {
-    parts[part->getFullInfo()] = std::move(part);
+    if (part && part->isValid()) {
+        std::string key = part->getFullInfo();
+        parts[key] = std::move(part);
+    }
 }
 
-AutoPart* Catalog::findPart(const string& name) {
+std::shared_ptr<AutoPart> Catalog::findPart(const std::string& name) {
     auto it = parts.find(name);
-    return (it != parts.end()) ? it->second.get() : nullptr;
+    if (it != parts.end()) {
+        // Возвращаем shared_ptr, который не владеет объектом
+        // Это безопасно, так как unique_ptr в parts гарантирует время жизни
+        return std::shared_ptr<AutoPart>(it->second.get(), [](AutoPart*){});
+    }
+    return nullptr;
 }
 
-vector<AutoPart*> Catalog::findCompatible(const string& vehicle) {
-    vector<AutoPart*> result;
+std::vector<std::shared_ptr<AutoPart>> Catalog::findCompatible(const std::string& vehicle) {
+    std::vector<std::shared_ptr<AutoPart>> result;
     for (const auto& pair : parts) {
-        if (pair.second->isCompatibleWith(vehicle)) {
-            result.push_back(pair.second.get());
+        auto& part = pair.second;
+        if (part->isCompatibleWith(vehicle)) {
+            result.push_back(std::shared_ptr<AutoPart>(part.get(), [](AutoPart*){}));
         }
     }
     return result;
 }
 
-size_t Catalog::getSize() const { return parts.size(); }
+size_t Catalog::getSize() const { 
+    return parts.size(); 
+}
+
+// Перегрузка оператора []
+std::shared_ptr<AutoPart> Catalog::operator[](const std::string& partName) {
+    return findPart(partName);
+}
