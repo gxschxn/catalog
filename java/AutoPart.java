@@ -16,7 +16,7 @@ interface Warrantable {
     }
 }
 
-public abstract class AutoPart implements Cloneable {
+public abstract class AutoPart implements Cloneable, Comparable<AutoPart> {
     protected int id; // protected для демонстрации
     protected String name;
     protected double price;
@@ -133,4 +133,10 @@ public abstract class AutoPart implements Cloneable {
     }
     
     public abstract AutoPart deepClone();
+    
+    // Реализация Comparable для шаблонных функций
+    @Override
+    public int compareTo(AutoPart other) {
+        return Double.compare(this.price, other.price);
+    }
 }

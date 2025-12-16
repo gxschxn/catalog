@@ -9,6 +9,8 @@ public class Main {
         app.addEnginePart(1, "Двигатель V6", 350000, "V6");
         app.addEnginePart(2, "Двигатель EJ204", 150000, "EJ204");
         app.addWheelPart(4, "Литые диски", 80000, 17.0, "5x114.3");
+        app.addEnginePart(3, "Премиум двигатель", 500000, "V8");
+        app.addWheelPart(5, "Спортивные диски", 120000, 18.0, "5x120");
         
         // Проверка обработки ошибок - некорректные данные
         System.out.println("\nПроверка обработки ошибок:");
@@ -49,5 +51,8 @@ public class Main {
         app.checkout();
         
         app.demonstratePolymorphismQuietly();
+        
+        // Демонстрация нового функционала
+        app.demonstrateNewFeatures();
     }
 }

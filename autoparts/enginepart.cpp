@@ -1,34 +1,48 @@
 #include "enginepart.hpp"
 #include <algorithm>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 EnginePart::EnginePart(std::string id, std::string name, double price, std::string engineType)
     : AutoPart(id, name, price), engineType(engineType) {
-    
-    compatibleVehicles = new std::vector<std::string>();
     initializeCompatibility();
     addCompatibility("universal");
 }
 
 EnginePart::~EnginePart() {
-    delete compatibleVehicles;
 }
 
 void EnginePart::initializeCompatibility() {
     if (engineType == "V6") {
-        compatibleVehicles->push_back("toyota camry");
-        compatibleVehicles->push_back("toyota rav4");
-        compatibleVehicles->push_back("honda accord");
+        compatibleVehicles.push_back("toyota camry");
+        compatibleVehicles.push_back("toyota rav4");
+        compatibleVehicles.push_back("honda accord");
     } else if (engineType.find("EJ") != std::string::npos) {
-        compatibleVehicles->push_back("subaru impreza");
-        compatibleVehicles->push_back("subaru forester");
+        compatibleVehicles.push_back("subaru impreza");
+        compatibleVehicles.push_back("subaru forester");
     } else if (engineType == "V12") {
-        compatibleVehicles->push_back("ferrari 488");
-        compatibleVehicles->push_back("lamborghini aventador");
+        compatibleVehicles.push_back("ferrari 488");
+        compatibleVehicles.push_back("lamborghini aventador");
+    } else if (engineType == "L4") {
+        compatibleVehicles.push_back("most compact cars");
+        compatibleVehicles.push_back("sedan");
     }
+    
+    // Устанавливаем список совместимости в базовый класс
+    setCompatibilityList(compatibleVehicles);
 }
 
-bool EnginePart::isCompatibleWith(const std::string& vehicle) const {
+std::string EnginePart::getType() const { 
+    return "Engine: " + engineType; 
+}
+
+std::string EnginePart::getSpecifications() const { 
+    return "Engine type: " + engineType + " | Compatible vehicles: " + 
+           std::to_string(compatibleVehicles.size());
+}
+
+bool EnginePart::checkCompatibility(const std::string& vehicle) const {
     std::string vehicleLower = vehicle;
     std::transform(vehicleLower.begin(), vehicleLower.end(), vehicleLower.begin(), ::tolower);
     
@@ -40,14 +54,16 @@ bool EnginePart::isCompatibleWith(const std::string& vehicle) const {
     } else if (engineType == "V12") {
         if (vehicleLower.find("ferrari") != std::string::npos || 
             vehicleLower.find("lamborghini") != std::string::npos) return true;
+    } else if (engineType == "L4") {
+        if (vehicleLower.find("compact") != std::string::npos || 
+            vehicleLower.find("sedan") != std::string::npos) return true;
     }
     
-    return std::find(compatibleVehicles->begin(), compatibleVehicles->end(), vehicleLower) 
-           != compatibleVehicles->end();
+    return AutoPart::checkCompatibility(vehicle);
 }
 
-std::string EnginePart::getType() const { 
-    return "Engine: " + engineType; 
+std::string EnginePart::getCompatibilityInfo() const {
+    return "Engine specific compatibility: " + std::to_string(compatibleVehicles.size()) + " vehicles";
 }
 
 std::string EnginePart::getDetailedInfo() const {
@@ -55,54 +71,16 @@ std::string EnginePart::getDetailedInfo() const {
     return baseInfo + " | Engine type: " + engineType;
 }
 
-std::string EnginePart::getFullInfo() const {
-    return name + " [" + engineType + "] - " + 
-           std::to_string(static_cast<int>(price)) + " RUB (" + id + ")";
-}
-
-AutoPart* EnginePart::clone() const {
-    EnginePart* newPart = new EnginePart(id, name, price, engineType);
-    newPart->setQuantity(quantity);
-    
-    std::vector<std::string>* newList = new std::vector<std::string>(*compatibleVehicles);
-    delete newPart->compatibleVehicles;
-    newPart->compatibleVehicles = newList;
-    
-    return newPart;
-}
-
-CloneablePart* EnginePart::deepClone() const {
-    return this->clone();
-}
-
-CloneablePart* EnginePart::shallowClone() const {
-    EnginePart* newPart = new EnginePart(id, name, price, engineType);
-    newPart->compatibleVehicles = this->compatibleVehicles;
-    return newPart;
-}
-
-EnginePart& EnginePart::operator=(const AutoPart& other) {
-    if (this != &other) {
-        AutoPart::operator=(other);
-        engineType = "Unknown";
-    }
-    return *this;
+void EnginePart::addCompatibleVehicle(const std::string& vehicle) {
+    compatibleVehicles.push_back(vehicle);
+    addCompatibility(vehicle);
 }
 
 EnginePart& EnginePart::operator=(const EnginePart& other) {
     if (this != &other) {
         AutoPart::operator=(other);
         engineType = other.engineType;
-        delete compatibleVehicles;
-        compatibleVehicles = new std::vector<std::string>(*other.compatibleVehicles);
+        compatibleVehicles = other.compatibleVehicles;
     }
     return *this;
-}
-
-void EnginePart::addVehicle(const std::string& vehicle) { 
-    compatibleVehicles->push_back(vehicle); 
-}
-
-bool isHighPerformanceEngine(const EnginePart& engine) {
-    return engine.engineType == "V12" || engine.engineType.find("turbo") != std::string::npos;
 }
