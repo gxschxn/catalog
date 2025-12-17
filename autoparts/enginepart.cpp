@@ -4,8 +4,8 @@
 #include <sstream>
 #include <iomanip>
 
-EnginePart::EnginePart(std::string id, std::string name, double price, std::string engineType)
-    : AutoPart(id, name, price), engineType(engineType) {
+EnginePart::EnginePart(std::string id, std::string brand, std::string name, double price, std::string engineType)
+    : AutoPart(id, brand, name, price), engineType(engineType) {
     initializeCompatibility();
     addCompatibility("universal");
 }

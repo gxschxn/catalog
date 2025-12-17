@@ -6,21 +6,39 @@
 #include <iomanip>
 #include <algorithm>
 
-void AutoPartsApp::addEnginePart(std::string id, std::string name, double price, std::string type) {
-    catalog.addPart(std::make_unique<EnginePart>(id, name, price, type));
+void AutoPartsApp::addEnginePart(std::string id, std::string brand, std::string name, double price, std::string type) {
+    auto part = std::make_unique<EnginePart>(id, brand, name, price, type);
+    catalog.addPart(std::move(part));
 }
 
-void AutoPartsApp::addWheelPart(std::string id, std::string name, double price, double diameter, std::string bolts) {
-    catalog.addPart(std::make_unique<Wheel>(id, name, price, diameter, bolts));
+void AutoPartsApp::addWheelPart(std::string id, std::string brand, std::string name, double price, double diameter, std::string bolts) {
+    auto part = std::make_unique<Wheel>(id, brand, name, price, diameter, bolts);
+    catalog.addPart(std::move(part));
 }
 
 std::vector<std::shared_ptr<AutoPart>> AutoPartsApp::findForVehicle(const std::string& vehicle) {
     return catalog.findCompatible(vehicle);
 }
 
-void AutoPartsApp::addToCart(const std::string& partName, int qty) {
-    if (auto part = catalog.findPart(partName)) {
+void AutoPartsApp::addToCart(const std::string& partId, int qty) {
+    auto part = catalog.findPartById(partId);
+    if (part) {
+        // Проверяем наличие
+        if (!part->isAvailable()) {
+            std::cout << "Error: Part '" << part->getFullName() << "' is out of stock!\n";
+            return;
+        }
+        
+        // Проверяем, что запрашиваемое количество не превышает доступное
+        if (qty > part->getAvailableQuantity()) {
+            std::cout << "Error: Only " << part->getAvailableQuantity() 
+                      << " items available. Cannot add " << qty << " to cart.\n";
+            return;
+        }
+        
         cart.addItem(part, qty);
+    } else {
+        std::cout << "Error: Part with ID " << partId << " not found!\n";
     }
 }
 
@@ -52,16 +70,16 @@ void AutoPartsApp::demonstratePartInventory() {
     // Создаем инвентарь для двигателей
     PartInventory<EnginePart> engineInventory;
     
-    engineInventory.addPart("E001", "Двигатель V6", 350000, "V6");
-    engineInventory.addPart("E002", "Двигатель V8", 550000, "V8");
-    engineInventory.addPart("E003", "Двигатель L4", 180000, "L4");
+    engineInventory.addPart("E001", "Toyota", "Двигатель V6", 350000, "V6");
+    engineInventory.addPart("E002", "BMW", "Двигатель V8", 550000, "V8");
+    engineInventory.addPart("E003", "Honda", "Двигатель L4", 180000, "L4");
     
     std::cout << "Всего двигателей: " << engineInventory.size() << std::endl;
     
     // Демонстрация поиска самой дорогой детали
     auto mostExpensive = engineInventory.findMostExpensive();
     if (mostExpensive) {
-        std::cout << "Самый дорогой двигатель: " << mostExpensive->getName() 
+        std::cout << "Самый дорогой двигатель: " << mostExpensive->getFullName() 
                   << " (" << mostExpensive->getPrice() << " руб.)" << std::endl;
     }
     
