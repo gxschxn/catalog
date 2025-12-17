@@ -3,9 +3,18 @@
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
+#include <stdexcept>
 
-AutoPart::AutoPart(std::string id, std::string name, double price) 
-    : id(id), name(name), price(price), quantity(0) {
+static_assert(AutoPart::MAX_BATCH_SIZE > 0, "Batch size must be positive");
+
+AutoPart::AutoPart(std::string id, std::string brand, std::string name, double price) 
+    : id(id), brand(brand), name(name), price(price), quantity(0) {
+    // Используем constexpr функцию для валидации
+    if (!isValidPrice(price)) {
+        throw std::invalid_argument("Invalid price value. Price must be between " + 
+                                   std::to_string(MIN_PRICE) + " and " + 
+                                   std::to_string(MAX_PRICE));
+    }
 }
 
 AutoPart::~AutoPart() {
@@ -22,8 +31,8 @@ bool AutoPart::isAvailable() const {
 
 std::string AutoPart::getFullInfo() const { 
     std::ostringstream oss;
-    oss << name << " - " << std::fixed << std::setprecision(0) 
-        << price << " RUB (" << id << ")";
+    oss << brand << " " << name << " (" << id << ") - " 
+        << std::fixed << std::setprecision(0) << price << " RUB";
     return oss.str();
 }
 

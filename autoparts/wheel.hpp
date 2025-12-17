@@ -9,7 +9,7 @@ private:
     std::string boltPattern;
     
 public:
-    Wheel(std::string id, std::string name, double price, double diameter, std::string boltPattern);
+    Wheel(std::string id, std::string brand, std::string name, double price, double diameter, std::string boltPattern);
     
     Wheel(const Wheel& other) = delete;  // Оставляем удаленным
     

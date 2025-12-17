@@ -10,7 +10,7 @@ private:
     std::vector<std::string> compatibleVehicles;
     
 public:
-    EnginePart(std::string id, std::string name, double price, std::string engineType);
+    EnginePart(std::string id, std::string brand, std::string name, double price, std::string engineType);
     
     virtual ~EnginePart() override;
     

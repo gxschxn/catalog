@@ -4,8 +4,8 @@
 #include <sstream>
 #include <iomanip>
 
-Wheel::Wheel(std::string id, std::string name, double price, double diameter, std::string boltPattern)
-    : AutoPart(id, name, price), diameter(diameter), boltPattern(boltPattern) {
+Wheel::Wheel(std::string id, std::string brand, std::string name, double price, double diameter, std::string boltPattern)
+    : AutoPart(id, brand, name, price), diameter(diameter), boltPattern(boltPattern) {
     addCompatibility("all types");
 }
 

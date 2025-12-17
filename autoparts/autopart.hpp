@@ -8,6 +8,7 @@
 #include <functional>
 #include <type_traits>
 #include <map>
+#include <array>
 
 // Интерфейс для проверки совместимости
 class ICompatibilityCheckable {
@@ -21,13 +22,14 @@ public:
 class AutoPart : public ICompatibilityCheckable {
 protected:
     std::string id;
+    std::string brand;
     std::string name;
     double price;
     int quantity;
     std::vector<std::string> compatibilityList;
     
 public:
-    AutoPart(std::string id, std::string name, double price);
+    AutoPart(std::string id, std::string brand, std::string name, double price);
     virtual ~AutoPart();
     
     // Запрещаем копирование по умолчанию
@@ -39,15 +41,12 @@ public:
     std::string getFullInfo() const;
     bool isValid() const;
     
-    // Реализация интерфейса ICompatibilityCheckable
     bool checkCompatibility(const std::string& vehicle) const override;
     std::string getCompatibilityInfo() const override;
     
-    // Чисто виртуальные методы
     virtual std::string getType() const = 0;
     virtual std::string getSpecifications() const = 0;
     
-    // Виртуальные методы с реализацией по умолчанию
     virtual void displayInfo() const;
     virtual std::string getDetailedInfo() const;
     
@@ -63,16 +62,30 @@ public:
     
     // Геттеры
     std::string getId() const { return id; }
+    std::string getBrand() const { return brand; }
     std::string getName() const { return name; }
+    std::string getFullName() const { return brand + " " + name; }
     int getQuantity() const { return quantity; }
+    int getAvailableQuantity() const { return quantity; }
     void setQuantity(int qty) { quantity = qty; }
+    
+    static constexpr int MAX_BATCH_SIZE = 100;
+    static constexpr double MIN_PRICE = 0.01;
+    static constexpr double MAX_PRICE = 10000000.0;
+    
+    constexpr double calculatePriceWithTax(double taxRate) const {
+        return price * (1.0 + taxRate / 100.0);
+    }
+    
+    constexpr bool isPriceInRange(double min, double max) const {
+        return price >= min && price <= max;
+    }
     
 protected:
     void addCompatibility(const std::string& vehicle);
     void setCompatibilityList(const std::vector<std::string>& list);
 };
 
-// Шаблонная функция для вычисления стоимости со скидкой (без концептов)
 template<typename T>
 typename std::enable_if<std::is_arithmetic<T>::value, T>::type
 calculateDiscountedPrice(T basePrice, double discountPercent) {
@@ -82,7 +95,6 @@ calculateDiscountedPrice(T basePrice, double discountPercent) {
     return basePrice * (1 - discountPercent / 100);
 }
 
-// Шаблонный класс инвентаря (без концептов)
 template<typename T>
 class PartInventory {
     static_assert(std::is_base_of<AutoPart, T>::value, 
@@ -101,7 +113,6 @@ public:
         }
     }
     
-    // Нешаблонные методы
     size_t size() const { return parts.size(); }
     bool empty() const { return parts.empty(); }
     
@@ -145,5 +156,34 @@ public:
     // Получение всех деталей
     const std::vector<T*>& getAllParts() const {
         return parts;
+    }
+};
+
+constexpr double calculateVAT(double price, double vatRate = 20.0) {
+    return price * (vatRate / 100.0);
+}
+
+constexpr bool isValidPrice(double price) {
+    return price > AutoPart::MIN_PRICE && price < AutoPart::MAX_PRICE;
+}
+
+class PriceCalculator {
+private:
+    double basePrice;
+    
+public:
+    constexpr PriceCalculator(double price) : basePrice(price) {}
+    
+    // constexpr метод
+    constexpr double getPriceWithDiscount(double discount) const {
+        return basePrice * (1.0 - discount / 100.0);
+    }
+    
+    constexpr double getPriceWithVAT(double vatRate = 20.0) const {
+        return basePrice * (1.0 + vatRate / 100.0);
+    }
+    
+    constexpr bool isExpensive(double threshold = 100000.0) const {
+        return basePrice > threshold;
     }
 };
